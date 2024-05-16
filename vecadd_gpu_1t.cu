@@ -1,7 +1,6 @@
 #include <iostream>
-#include <chrono>
-#include <unistd.h>
-#include <cuda_runtime.h>
+
+#include <iomanip>
 
 
 __global__ void add (int n, float *x, float *y) {
@@ -9,7 +8,7 @@ __global__ void add (int n, float *x, float *y) {
         y[i] = x[i] + y[i];
     }
 }
-int main(int ac, char *av[]){
+int main(void){
    int N =  1<<29; 
    float *x, *y;
    
