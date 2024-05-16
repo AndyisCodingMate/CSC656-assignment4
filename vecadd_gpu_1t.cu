@@ -14,6 +14,7 @@ __global__ void add (int n, float *x, float *y) {
 }
 int main(void){
    int N =  1<<29; 
+   float *x, *y;
    cudaMallocHost((void**)&x, N * sizeof(float));
    cudaMallocHost((void**)&y, N * sizeof(float));
     // initialize x and y on the CPU
@@ -32,7 +33,7 @@ int main(void){
     // Run on 512M elements on the GPU
     add<<<BLOCKSPerGRID,THREADSPerBLOCK>>>(N, d_x, d_y);
     cudaDeviceSynchronize();
-    
+
     // Copy result back to host
     cudaMemcpy(y, d_y, size, cudaMemcpyDeviceToHost);
 
