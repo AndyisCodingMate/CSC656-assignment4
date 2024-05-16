@@ -15,33 +15,31 @@ __global__ void add (int n, float *x, float *y) {
         y[i] = x[i] + y[i];
     }
 }
-int main(void){
+int main(int ac, char *av[]){
    int N =  1<<29; 
    float *x, *y;
-   cudaMallocHost((void**)&x, N * sizeof(float));
-   cudaMallocHost((void**)&y, N * sizeof(float));
+   
+   int size = N * sizeof(float);
+   cudaMallocManaged((void**)&x, size);
+   cudaMallocManaged((void**)&y, size);
+
     // initialize x and y on the CPU
     for (int i = 0; i < N; i++) {
         x[i] = 1.0f;
         y[i] = 2.0f;
     }
 
-    int size = N * sizeof(float);
-    float * d_x, * d_y;
-    cudaMalloc((void**)&d_x, size);
-    cudaMalloc((void**)&d_y, size);
-    cudaMemcpy(d_x, x, size, cudaMemcpyHostToDevice);
-    cudaMemcpy(d_y, y, size, cudaMemcpyHostToDevice);
-    
     // Run on 512M elements on the GPU
-    add<<<BLOCKSPerGRID,THREADSPerBLOCK>>>(N, d_x, d_y);
+    add<<<BLOCKSPerGRID,THREADSPerBLOCK>>>(N, x, y);
     cudaDeviceSynchronize();
-    
-    // Copy result back to host
-    cudaMemcpy(y, d_y, size, cudaMemcpyDeviceToHost);
+
+    // Check for errors (all values should be 3.0f)
+    float maxError = 0.0f;
+    for (int i = 0; i < N; i++)
+        maxError = fmax(maxError, fabs(y[i]-3.0f));
+    std::cout << "Max error: " << maxError << std::endl;
 
     // Free memory
-    cudaFree(d_x); cudaFree(d_y);
-    cudaFreeHost(x); cudaFreeHost(y);
+    cudaFree(x); cudaFree(y);
     return 0;
 }
