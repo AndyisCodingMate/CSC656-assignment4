@@ -1,7 +1,10 @@
 #include <iostream>
+#include <chrono>
+#include <unistd.h>
+#include <cuda_runtime.h>
 
-#include <iomanip>
-
+#define BLOCKSPerGRID 1
+#define THREADSPerBLOCK 256
 
 __global__ void add (int n, float *x, float *y) {
     for (int i = 0; i < n; i++) {
