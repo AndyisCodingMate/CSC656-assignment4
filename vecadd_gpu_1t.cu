@@ -39,6 +39,6 @@ int main(void){
 
     // Free memory
     cudaFree(d_x); cudaFree(d_y);
-    delete [] x; delete [] y;
+    cudaFreeHost(x); cudaFreeHost(y);
     return 0;
 }
