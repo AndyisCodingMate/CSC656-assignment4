@@ -4,9 +4,6 @@
 #include <cuda_runtime.h>
 
 
-#define BLOCKSPerGRID 1
-#define THREADSPerBLOCK 1
-
 __global__ void add (int n, float *x, float *y) {
     for (int i = 0; i < n; i++) {
         y[i] = x[i] + y[i];
@@ -27,7 +24,7 @@ int main(int ac, char *av[]){
     }
 
     // Run on 512M elements on the GPU
-    add<<<BLOCKSPerGRID,THREADSPerBLOCK>>>(N, x, y);
+    add<<<1,1>>>(N, x, y);
     cudaDeviceSynchronize();
 
     // Check for errors (all values should be 3.0f)
