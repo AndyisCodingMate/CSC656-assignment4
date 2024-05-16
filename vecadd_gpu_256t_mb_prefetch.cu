@@ -33,6 +33,9 @@ int main(void){
     cudaMemcpy(d_y, y, size, cudaMemcpyHostToDevice);
     
     int numBlocks = (N + THREADSPerBLOCK - 1) / THREADSPerBLOCK;
+    printf("numBlocks: %d\n", numBlocks);
+
+    // Prefetch data to GPU
     int deviceID = 0;
     cudaMemPrefetchAsync((void *)x, N*sizeof(float), deviceID) ;
     cudaMemPrefetchAsync((void *)y, N*sizeof(float), deviceID) ;

@@ -33,7 +33,8 @@ int main(void){
     cudaMemcpy(d_y, y, size, cudaMemcpyHostToDevice);
     
     int numBlocks = (N + THREADSPerBLOCK - 1) / THREADSPerBLOCK;
-
+    printf("numBlocks: %d\n", numBlocks);
+    
     // Run on 512M elements on the GPU
     add<<<numBlocks,THREADSPerBLOCK>>>(N, d_x, d_y);
     cudaDeviceSynchronize();
